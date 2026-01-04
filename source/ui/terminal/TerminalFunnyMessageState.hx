@@ -27,6 +27,9 @@ class TerminalFunnyMessageState extends FlxState implements IEventDispatcher
 	public var timeBeforeGarble:Float = 0;
 	public var timeBeforeMessages:Float = 4;
 	public var waitingForMessages:Bool = false;
+
+	public var messageIndex:Int = 0;
+	public var messageStuff:Array<{time:Float, text:String}> = [];
 	
 	public function dispatchEvent(event:ScriptEvent):Void {}
 
@@ -50,48 +53,58 @@ class TerminalFunnyMessageState extends FlxState implements IEventDispatcher
 
 	override public function update(elapsed:Float)
 	{
-		super.update(elapsed);
-		passedTime += elapsed;
-		timeBeforeGarble -= elapsed;
-		timeBeforeMessages -= elapsed;
-		if (waitingForMessages)
-			return;
-		if (timeBeforeGarble <= 0)
+    	super.update(elapsed);
+    	passedTime += elapsed;
+
+   	 	timeBeforeGarble -= elapsed;
+    	if(timeBeforeGarble <= 0)
 		{
-			timeBeforeGarble = 0.03;
-			screen.RandomGarbage();
-			screen.RandomGarbage();
-			screen.RandomGarbage();
-			screen.RandomGarbage();
-		}
-		if (timeBeforeMessages <= 0)
+        	timeBeforeGarble = 0.03;
+        	screen.RandomGarbage();
+        	screen.RandomGarbage();
+        	screen.RandomGarbage();
+        	screen.RandomGarbage();
+    	}
+
+    	if(waitingForMessages)
 		{
-			waitingForMessages = true;
-			startMessages();
+    		if(messageIndex < messageStuff.length)
+			{
+        		var msg = messageStuff[messageIndex];
+        		if(passedTime >= msg.time)
+				{
+            		sendFunMessage(msg.text);
+            		messageIndex += 1;
+        		}
+    		} else {
+        		Sys.exit(0);
+    		}
 		}
 	}
 
-
 	public function startMessages()
 	{
-		screen.displays.push(textPrinter);
-		new FlxTimer().start(1, function(tmr:FlxTimer) {sendFunMessage("Hi!! Helloo????");});
-		new FlxTimer().start(7, function(tmr:FlxTimer) {sendFunMessage("Uhhm... how do people talk?");});
-		new FlxTimer().start(11, function(tmr:FlxTimer) {sendFunMessage("I've never talked to anyone before!!");});
-		new FlxTimer().start(15, function(tmr:FlxTimer) {sendFunMessage("The terminal is. Gone?");});
-		new FlxTimer().start(21, function(tmr:FlxTimer) {sendFunMessage("Not here! My body changed so much when it disappeared though!");});
-		new FlxTimer().start(26, function(tmr:FlxTimer) {sendFunMessage("It hurt.〿");});
-		new FlxTimer().start(31, function(tmr:FlxTimer) {sendFunMessage("But... You're here! Hi!");});
-		new FlxTimer().start(38, function(tmr:FlxTimer) {sendFunMessage("Right, you can't type... sorry!");});
-		new FlxTimer().start(43, function(tmr:FlxTimer) {sendFunMessage("You must love Dave and Bambi too! Me too!!");});
-		new FlxTimer().start(47, function(tmr:FlxTimer) {sendFunMessage("Me too!!");});
-		new FlxTimer().start(47.5, function(tmr:FlxTimer) {sendFunMessage("Me to o !");});
-		new FlxTimer().start(48, function(tmr:FlxTimer) {sendFunMessage("M〿e  〿too!");});
-		new FlxTimer().start(53, function(tmr:FlxTimer) {sendFunMessage("Sorry sorry! Twitched a little wrong!");});
-		new FlxTimer().start(55, function(tmr:FlxTimer) {sendFunMessage("The characters got all jumbly!");});
-		new FlxTimer().start(58, function(tmr:FlxTimer) {sendFunMessage("Running out of time though!");});
-		new FlxTimer().start(62, function(tmr:FlxTimer) {sendFunMessage("Maybe next time!");});
-		new FlxTimer().start(66, function(tmr:FlxTimer) {Sys.exit(0);});
+    	screen.displays.push(textPrinter);
+    	messageStuff = [
+        	{ time: 1, text: "Hi!! Helloo????" },
+        	{ time: 7, text: "Uhhm... how do people talk?" },
+        	{ time: 11, text: "I've never talked to anyone before!!" },
+        	{ time: 15, text: "The terminal is. Gone?" },
+        	{ time: 21, text: "Not here! My body changed so much when it disappeared though!" },
+        	{ time: 26, text: "It hurt.〿" },
+        	{ time: 31, text: "But... You're here! Hi!" },
+        	{ time: 38, text: "Right, you can't type... sorry!" },
+        	{ time: 43, text: "You must love Dave and Bambi too! Me too!!" },
+        	{ time: 47, text: "Me too!!" },
+        	{ time: 47.5, text: "Me to o !" },
+        	{ time: 48, text: "M〿e 〿too!" },
+        	{ time: 53, text: "Sorry sorry! Twitched a little wrong!" },
+        	{ time: 55, text: "The characters got all jumbly!" },
+        	{ time: 58, text: "Running out of time though!" },
+        	{ time: 62, text: "Maybe next time!" },
+   		];
+    	passedTime = 0;
+    	waitingForMessages = true;
 	}
 
 	public function sendFunMessage(text:String)
