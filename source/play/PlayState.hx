@@ -667,7 +667,7 @@ class PlayState extends MusicBeatState
 
 		elapsedTime += elapsed;
 
-		if ((isInCutscene && FlxG.keys.justPressed.ESCAPE) || (FlxG.keys.justPressed.ENTER && Countdown.countdownStarted && canPause))
+		if ((isInCutscene && FlxG.keys.justPressed.ESCAPE) || (!isInCutscene && FlxG.keys.justPressed.ENTER && Countdown.countdownStarted && canPause))
 			runPause();
 
 		if (FlxG.keys.justPressed.SEVEN)
@@ -1099,8 +1099,8 @@ class PlayState extends MusicBeatState
 		camDialogue.bgColor.alpha = 0;
 
 		FlxG.cameras.reset(camGame);
-		FlxG.cameras.add(camOther, false);
 		FlxG.cameras.add(camHUD, false);
+		FlxG.cameras.add(camOther, false);
 		FlxG.cameras.add(camDialogue, false);
 
 		FlxG.cameras.setDefaultDrawTarget(camGame, true);

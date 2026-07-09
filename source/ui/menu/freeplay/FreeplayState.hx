@@ -43,7 +43,7 @@ class FreeplayState extends MusicBeatState
 	/**
 	 * Debug feature: Automatically unlocks all songs.
 	 */
-	public static var unlockAll:Bool = true;
+	public static var unlockAll:Bool = false;
 
 	/**
 	 * A list of all of the songs that skip the character select.
